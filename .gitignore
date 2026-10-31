@@ -1,0 +1,8 @@
+# Foldere generate la compilare
+[Bb]in/
+[Oo]bj/
+
+# Setări locale Visual Studio
+.vs/
+*.user
+*.suo
