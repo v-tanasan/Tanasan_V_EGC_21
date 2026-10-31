@@ -1,1 +1,1 @@
-# Tanasan_V_EGC_21
+# Aplicatie consola C-Sharp folosind OpenGL si OpenTK.
