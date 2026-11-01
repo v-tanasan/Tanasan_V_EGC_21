@@ -166,9 +166,6 @@ public class Game : GameWindow
         sel.Transform.Scale.X = Math.Clamp(sel.Transform.Scale.X, 0.1f, 10.0f);
         sel.Transform.Scale.Y = Math.Clamp(sel.Transform.Scale.Y, 0.1f, 10.0f);
 
-        // de x3 ori mai rapid
-
-
         if (KeyboardState.IsKeyPressed(Keys.Tab)) _selected = (_selected + 1) % _scene.Count;
         if (KeyboardState.IsKeyPressed(Keys.O))   _camera.IsPerspective = !_camera.IsPerspective;
         if (KeyboardState.IsKeyPressed(Keys.F))   _wireframe = !_wireframe;
@@ -184,6 +181,10 @@ public class Game : GameWindow
 
         // TODO (T3): la clic stânga, obiectul selectat se mută în punctul din lume aflat sub cursor
         //            (folosiți ScreenToWorld; Depth nu se schimbă)
+        if (MouseState.IsButtonPressed(MouseButton.Left))
+        {
+            sel.Transform.Position = ScreenToWorld(MouseState.Position);
+        }
 
         // TODO (T4, facultativ): clic dreapta = pivot; tasta P ținută = rotație în jurul pivotului
 
@@ -265,7 +266,20 @@ public class Game : GameWindow
     private Vector2 ScreenToWorld(Vector2 mousePixels)
     {
         // TODO (T3): pasul 1 (pixel → NDC), apoi pasul 2 (NDC → lume, cu inversa lui view * projection)
-        return Vector2.Zero;
+        
+        //      T3: de ce apare semnul minus (sau 1 −) in formula pentru y?
+        //          - pentru ca in NDC y creste in sus iar la mouse creste in jos
+
+        float x_ndc = (2.0f * MousePosition.X) / ClientSize.X - 1.0f;
+        float y_ndc = 1.0f - 2.0f * MousePosition.Y / ClientSize.Y;
+        Vector4 p_ndc = new Vector4(x_ndc, y_ndc, 0f, 1f);
+
+        Matrix4 inversa = Matrix4.Invert(_camera.ViewMatrix * _camera.ProjectionMatrix);
+        Vector4 lume = Vector4.TransformRow(p_ndc, inversa);
+        lume /= lume.W;
+
+        //return Vector2.Zero;
+        return new Vector2(lume.X, lume.Y);
     }
 
     /// <summary>Tasta R: obiectele revin la transformările inițiale, camera la starea inițială.</summary>
