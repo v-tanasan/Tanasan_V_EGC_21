@@ -20,7 +20,7 @@ public class Transform2D
         //     - intai ar fi deplasat obiectul (i se schimba originea), apoi rotit in jurul originii
         //     sistemului de coordonate si nu in jurul originii obiectului.
         
-        Matrix4.CreateScale(Position.X, Position.Y, 1.0f) *
+        Matrix4.CreateScale(Scale.X, Scale.Y, 1.0f) *
         Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Rotation)) *
         Matrix4.CreateTranslation(Position.X, Position.Y, Depth);
         
