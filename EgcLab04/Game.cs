@@ -31,6 +31,8 @@ public class Game : GameWindow
     private int _frames, _lastFrames;
     private bool _titleDirty = true;
 
+    private Vector2 pivot = Vector2.Zero;   // pentru T4 - rotire in jurul unui pivot
+
     public Game(int width, int height, string title)
         : base(GameWindowSettings.Default,
                new NativeWindowSettings
@@ -181,12 +183,41 @@ public class Game : GameWindow
 
         // TODO (T3): la clic stânga, obiectul selectat se mută în punctul din lume aflat sub cursor
         //            (folosiți ScreenToWorld; Depth nu se schimbă)
+        
         if (MouseState.IsButtonPressed(MouseButton.Left))
         {
             sel.Transform.Position = ScreenToWorld(MouseState.Position);
         }
 
+        
         // TODO (T4, facultativ): clic dreapta = pivot; tasta P ținută = rotație în jurul pivotului
+
+        if (MouseState.IsButtonPressed(MouseButton.Right))
+        {
+            pivot = ScreenToWorld(MouseState.Position);
+        }
+
+        if (KeyboardState.IsKeyDown(Keys.P))
+        {
+            float unghiGrade = 90f * de3Ori;
+            float unghiRadiani = MathHelper.DegreesToRadians(unghiGrade);
+
+            // Vectorul (distanta) de la pivot la centrul obiectului
+            Vector2 distantaO_P = sel.Transform.Position - pivot;
+
+            float cos = MathF.Cos(unghiRadiani);
+            float sin = MathF.Sin(unghiRadiani);
+
+            // Rotim in vectorul distantaO_P jurul originii
+            Vector2 rotireDistO_P = new Vector2(distantaO_P.X * cos - distantaO_P.Y * sin, 
+                distantaO_P.X * sin + distantaO_P.Y * cos);
+
+            // Coordonatele lumii
+            sel.Transform.Position = pivot + rotireDistO_P;
+
+            // Rotire obiect cu acelasi unghi
+            sel.Transform.Rotation += unghiGrade;
+        }
 
         // --- Camera: tastatura și rotița (secțiunea 6.2) -----------------------------
 
