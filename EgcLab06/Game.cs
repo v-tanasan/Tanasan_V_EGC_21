@@ -67,6 +67,8 @@ public class Game : GameWindow
         _scenes.Add(new LabScene());
         // TEMA: adăugați aici scena (sau scenele) temei; Tab trece de la o scenă la alta.
         _scenes.Add(new ObstacleScene());
+        // TEMA: masina
+        _scenes.Add(new CarScene());
 
         foreach (Scene scene in _scenes)
         {
